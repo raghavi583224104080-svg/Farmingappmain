@@ -1,50 +1,57 @@
-// Install dependencies: npm install express node-fetch cors dotenv
+// backend.js
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
 import dotenv from "dotenv";
+import multer from "multer";
 
-// Load environment variables from key.env
-dotenv.config({ path: "./key.env" });
+dotenv.config(); // loads GEMINI_API_KEY from .env
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// AI endpoint
-app.post("/api/ai", async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: "No prompt provided" });
+// multer for handling image uploads
+const upload = multer();
+
+app.post("/ai", upload.single("image"), async (req, res) => {
+  const prompt = req.body.prompt;
+  const imageFile = req.file;
+
+  if (!prompt && !imageFile) {
+    return res.status(400).json({ error: "No prompt or image provided" });
+  }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    // Prepare payload for Gemini API
+    const payload = { input: prompt || "" };
+
+    if (imageFile) {
+      // If your Gemini endpoint supports images, send base64
+      payload.image = imageFile.buffer.toString("base64");
+    }
+
+    // Replace with your actual Gemini endpoint
+    const response = await fetch("https://api.gemini.com/v1/your-endpoint", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        "Authorization": `Bearer ${process.env.GEMINI_API_KEY}`
       },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }]
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
 
-    // Optional: handle errors from OpenAI
-    if (data.error) {
-      return res.status(400).json({ error: data.error.message });
-    }
+    // Send a simplified reply to frontend
+    res.json({ reply: data.output || "No response from Gemini" });
 
-    res.json(data);
   } catch (err) {
-    console.error("Server error:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("Gemini API error:", err);
+    res.status(500).json({ error: "Server error contacting AI" });
   }
 });
 
 // Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
