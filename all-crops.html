@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>All Crops - FarmersApp</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f8f2;
+      padding: 2rem;
+      color: #2a7a2a;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .crop-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease;
+      cursor: default;
+    }
+    .crop-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    .crop-card img {
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+    .crop-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+    }
+    .crop-price {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #3a8a3a;
+    }
+  </style>
+</head>
+<body>
+  <h1>All Crop Prices</h1>
+  <div class="grid" id="allCropsGrid"></div>
+
+  <script>
+    const cropPrices = [
+      { name: 'Wheat', price: '₹2,100 per quintal', img: 'https://via.placeholder.com/150?text=Wheat' },
+      { name: 'Rice', price: '₹1,900 per quintal', img: 'https://via.placeholder.com/150?text=Rice' },
+      { name: 'Maize', price: '₹1,800 per quintal', img: 'https://via.placeholder.com/150?text=Maize' },
+      { name: 'Sugarcane', price: '₹3,200 per quintal', img: 'https://via.placeholder.com/150?text=Sugarcane' },
+      { name: 'Cotton', price: '₹5,000 per quintal', img: 'https://via.placeholder.com/150?text=Cotton' }
+    ];
+
+    const grid = document.getElementById('allCropsGrid');
+    cropPrices.forEach(crop => {
+      const card = document.createElement('div');
+      card.className = 'crop-card';
+      card.innerHTML = `
+        <img src="${crop.img}" alt="${crop.name}" />
+        <div class="crop-name">${crop.name}</div>
+        <div class="crop-price">${crop.price}</div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

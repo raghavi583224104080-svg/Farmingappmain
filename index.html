@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kerala Farmers — Mobile UI</title>
+  <style>
+    :root{
+      --ivory: #FFFFF0;
+      --olive: #556B2F;
+      --card-radius: 18px;
+      --shadow: 0 6px 18px rgba(0,0,0,0.12);
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box;}
+    html,body{height:100%;margin:0;
+      background:linear-gradient(160deg,var(--ivory), #E8E7D8 30%, var(--olive) 100%);
+    }
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .phone-frame{
+      width:min(420px, 94vw);
+      max-width:420px;
+      height:calc(min(820px, 95vh));
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+      border-radius:28px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.15);
+      position:relative;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      overflow:hidden;
+    }
+
+    /* notch */
+    .notch{width:60px;height:18px;border-radius:12px;background:rgba(0,0,0,0.06);
+      align-self:center;display:flex;justify-content:center;gap:6px;
+      margin-top:4px;margin-bottom:2px;align-items:center;}
+    .camera-dot{width:8px;height:8px;border-radius:50%;background:#111;opacity:0.6}
+    .speaker-line{width:26px;height:3px;border-radius:2px;background:#111;opacity:0.35}
+
+    /* top row */
+    .top-row{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;gap:8px;}
+    .weather-box{background:linear-gradient(90deg, rgba(255,255,240,0.9), rgba(200,210,170,0.12));
+      color:#333;padding:10px 14px;border-radius:14px;font-weight:600;box-shadow:var(--shadow);
+      min-width:96px;text-transform:lowercase;letter-spacing:0.6px;}
+    .top-right{display:flex;align-items:center;gap:8px;}
+    .icon-btn{border:none;background:rgba(255,255,255,0.9);border-radius:10px;
+      padding:8px;box-shadow:0 4px 8px rgba(0,0,0,0.08);
+      display:inline-flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;}
+    .small-square{width:36px;height:36px;border-radius:8px}
+    .icon-btn svg{color:var(--olive)}
+
+    /* main content */
+    .content{display:flex;flex-direction:column;gap:10px;align-items:stretch;padding:6px;flex:1;}
+
+    .carousel-wrapper{display:flex;align-items:center;gap:8px;justify-content:center;}
+    .arrow{background:transparent;border:1px solid rgba(0,0,0,0.06);
+      width:36px;height:36px;border-radius:10px;font-size:18px;cursor:pointer;touch-action:manipulation;}
+    .carousel{display:flex;gap:12px;overflow-x:scroll;width:100%;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:6px 0;}
+    .card{
+      min-width:78%;max-width:78%;height:44vh;
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,245,0.9));
+      border-radius:16px;padding:18px;box-shadow:var(--shadow);
+      scroll-snap-align:center;display:flex;flex-direction:column;gap:6px;
+      align-items:flex-start;justify-content:center;text-align:left;
+    }
+    .card h2{margin:0;font-size:1.2rem;color:var(--olive)}
+    .card p{margin:0;color:#444}
+    .dots{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:6px}
+    .dots .dot{width:8px;height:8px;border-radius:999px;background:rgba(0,0,0,0.12);}
+    .dots .dot.active{width:10px;height:10px;background:var(--olive)}
+
+    /* search row */
+    .search-row{display:flex;align-items:center;gap:8px;padding:6px;}
+    .search-input{flex:1;padding:12px 14px;font-size:16px;border-radius:12px;border:none;
+      box-shadow:0 6px 16px rgba(0,0,0,0.06);outline:none;
+      background:linear-gradient(90deg, rgba(255,255,255,0.9), rgba(245,245,240,0.9));}
+    .icon-btn.gallery,.icon-btn.mic{padding:8px;border-radius:10px;background:transparent;}
+    .send-btn{background:var(--olive);color:white;border:none;border-radius:10px;padding:10px 14px;cursor:pointer;}
+
+    /* bottom nav */
+    .bottom-nav{display:flex;align-items:center;justify-content:space-around;gap:10px;padding:10px 6px;border-top:1px solid rgba(0,0,0,0.03);}
+    .nav-btn{border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#333;cursor:pointer;}
+    .camera-btn{width:68px;height:68px;border-radius:999px;background:linear-gradient(180deg,var(--olive), #6c8b46);
+      display:flex;align-items:center;justify-content:center;color:white;
+      box-shadow:0 10px 20px rgba(0,0,0,0.18);transform:translateY(-18%);
+      border:4px solid rgba(255,255,255,0.6);}
+
+    /* AI response panel */
+    .ai-panel{
+      position:absolute;top:0;right:-100%;width:100%;height:100%;
+      background:#fff;border-radius:28px;box-shadow:var(--shadow);
+      transition:right 0.4s ease;display:flex;flex-direction:column;overflow-y:auto;padding:16px;
+    }
+    .ai-panel.active{right:0;}
+    .ai-panel h3{margin-top:0;color:var(--olive);}
+    .ai-panel button.close-btn{align-self:flex-end;background:transparent;border:none;font-size:18px;cursor:pointer;}
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="notch"><div class="camera-dot"></div><div class="speaker-line"></div></div>
+
+    <header class="top-row">
+      <div class="weather-box">weather</div>
+      <div class="top-right">
+        <button class="icon-btn small-square"></button>
+        <button class="icon-btn small-square"></button>
+        <button class="icon-btn location" title="Location">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="carousel-wrapper">
+        <button class="arrow left">&larr;</button>
+        <div class="carousel" id="carousel">
+          <article class="card"><h2>Crops</h2><p>Crop info, tips and schedules.</p></article>
+          <article class="card"><h2>Market Price</h2><p>Latest prices from local markets.</p></article>
+          <article class="card"><h2>Chat Box</h2><p>AI assistant & conversation.</p></article>
+        </div>
+        <button class="arrow right">&rarr;</button>
+      </div>
+      <div class="dots" id="dots"></div>
+
+      <div class="search-row">
+        <button id="galleryBtn" class="icon-btn gallery" title="Gallery">📂</button>
+        <input id="searchInput" class="search-input" type="search" placeholder="Ask AI..."/>
+        <button id="micBtn" class="icon-btn mic" title="Voice">🎤</button>
+        <button id="sendBtn" class="send-btn">Send</button>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn" id="homeBtn">🏠<span>Home</span></button>
+      <button id="cameraBtn" class="camera-btn">📷</button>
+      <button class="nav-btn" id="marketBtn">💹<span>Market</span></button>
+    </nav>
+
+    <input type="file" id="fileInput" accept="image/*" style="display:none" />
+
+    <!-- AI Response Panel -->
+    <section class="ai-panel" id="aiPanel">
+      <button class="close-btn" onclick="closeAI()">✖</button>
+      <h3>AI Response</h3>
+      <div id="aiOutput">No response yet.</div>
+    </section>
+  </div>
+
+  <script>
+    function openAI(){document.getElementById("aiPanel").classList.add("active");}
+    function closeAI(){document.getElementById("aiPanel").classList.remove("active");}
+
+    // Call backend Node.js instead of OpenAI directly
+    async function callAI(prompt, imageFile=null){
+      try {
+        const response = await fetch("http://localhost:3000/api/ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await response.json();
+        if(data.error){
+          document.getElementById("aiOutput").innerText = "API Error: " + data.error.message;
+          openAI(); return;
+        }
+        const reply = data.choices?.[0]?.message?.content || "No response";
+        document.getElementById("aiOutput").innerText = reply;
+        openAI();
+      } catch(err){
+        console.error(err);
+        document.getElementById("aiOutput").innerText = "Fetch error: " + err.message;
+        openAI();
+      }
+    }
+
+    // Buttons
+    document.getElementById("sendBtn").onclick=()=>{
+      const val=document.getElementById("searchInput").value.trim();
+      if(val) callAI(val);
+    };
+    document.getElementById("galleryBtn").onclick=()=>document.getElementById("fileInput").click();
+    document.getElementById("fileInput").onchange=e=>{if(e.target.files[0]) callAI("Analyze this image",e.target.files[0]);};
+    document.getElementById("cameraBtn").onclick=()=>{
+      const camInput=document.createElement("input");
+      camInput.type="file"; camInput.accept="image/*"; camInput.capture="environment";
+      camInput.onchange=ev=>{if(ev.target.files[0]) callAI("Analyze this photo",ev.target.files[0]);};
+      camInput.click();
+    };
+
+    // Voice input
+    const micBtn=document.getElementById("micBtn");
+    const searchInput=document.getElementById("searchInput");
+    if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+      const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      const recognition=new SR();
+      recognition.lang="en-US";recognition.interimResults=false;
+      recognition.onresult=e=>{
+        const txt=e.results[0][0].transcript;
+        searchInput.value=txt;
+        callAI(txt);
+      };
+      micBtn.onclick=()=>recognition.start();
+    } else micBtn.onclick=()=>alert("Speech recognition not supported");
+
+    // Carousel
+    const carousel=document.getElementById("carousel");
+    const cards=Array.from(carousel.querySelectorAll(".card"));
+    const dotsContainer=document.getElementById("dots");
+    let index=0;
+
+    function createDots(){dotsContainer.innerHTML='';cards.forEach((c,i)=>{
+      const dot=document.createElement("div");
+      dot.className="dot"+(i===0?" active":"");
+      dot.addEventListener("click",()=>scrollToIndex(i));
+      dotsContainer.appendChild(dot);
+    });}
+    function updateDots(){Array.from(dotsContainer.children).forEach((d,i)=>d.classList.toggle("active",i===index));}
+    function scrollToIndex(i){index=i;cards[i].scrollIntoView({behavior:"smooth",inline:"center"});updateDots();}
+    document.querySelector(".arrow.left").onclick=()=>{index=Math.max(0,index-1);scrollToIndex(index);};
+    document.querySelector(".arrow.right").onclick=()=>{index=Math.min(cards.length-1,index+1);scrollToIndex(index);};
+    carousel.addEventListener("scroll",()=>{
+      clearTimeout(carousel._t);
+      carousel._t=setTimeout(()=>{
+        const rect=carousel.getBoundingClientRect();
+        let best=0,bestDiff=Infinity;
+        cards.forEach((c,i)=>{const r=c.getBoundingClientRect();const center=(r.left+r.right)/2;
+          const diff=Math.abs(center-(rect.left+rect.right)/2);
+          if(diff<bestDiff){bestDiff=diff;best=i;}});
+        index=best;updateDots();
+      },80);
+    });
+    createDots();scrollToIndex(0);
+
+    // Touch swipe
+    let startX=0,scrollLeft=0;
+    carousel.addEventListener("touchstart",e=>{startX=e.touches[0].pageX;scrollLeft=carousel.scrollLeft;});
+    carousel.addEventListener("touchmove",e=>{const x=e.touches[0].pageX;carousel.scrollLeft=scrollLeft+(startX-x);});
+  </script>
+</body>
+</html>
