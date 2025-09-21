@@ -29,16 +29,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1vmin;
+    padding: 0; /* Changed to 0 to remove outer spacing */
 }
 
 .phone-frame {
-    /* Updated for better responsiveness on larger screens */
+    /* Desktop/Tablet Styles */
     width: 98vw;
     height: 98vh;
     max-width: 420px;
     max-height: 850px;
-    
     background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
     border-radius: 28px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -49,6 +48,31 @@ body {
     overflow: hidden;
     transition: all 0.4s ease;
 }
+
+/* --- The key change: Media query for mobile devices --- */
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+    .phone-frame {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+    .top-row {
+        padding: 2.5vmin 4vmin;
+    }
+    .content {
+        padding: 2.5vmin 4vmin;
+    }
+}
+/* --- End of key change --- */
 
 .top-row {
     display: flex;
@@ -286,15 +310,14 @@ body {
     position: absolute;
     top: 0;
     right: -100vw;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background: #fff;
     border-radius: 28px;
     box-shadow: var(--shadow);
     transition: right 0.4s ease;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     padding: 4vmin;
     z-index: 10;
 }
@@ -303,15 +326,43 @@ body {
     right: 0;
 }
 
-.ai-panel h3 {
-    margin-top: 4vmin;
-    color: var(--olive);
+.ai-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4vmin;
 }
 
-.ai-panel .close-btn {
-    position: absolute;
-    top: 4vmin;
-    right: 4vmin;
+.ai-header h3 {
+    margin: 0;
+    color: var(--olive);
+    font-size: 5vmin;
+    flex-grow: 1;
+    text-align: center;
+    padding: 0 4vmin;
+}
+
+.ai-header .new-chat-btn {
+    background: #e0e0e0;
+    border: none;
+    border-radius: 12px;
+    padding: 1.5vmin 3vmin;
+    font-size: 2.5vmin;
+    cursor: pointer;
+    color: #333;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.ai-header .new-chat-btn:hover {
+    opacity: 1;
+}
+
+.ai-header .new-chat-btn:active {
+    transform: scale(0.96);
+}
+
+.ai-header .close-btn {
     background: rgba(0,0,0,0.05);
     border: none;
     border-radius: 50%;
@@ -320,10 +371,42 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.ai-panel .close-btn svg {
+.ai-header .close-btn svg {
     width: 5vmin;
     height: 5vmin;
     color: #333;
+}
+.ai-output-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2vmin;
+    padding: 2vmin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.chat-bubble {
+    padding: 3vmin 4vmin;
+    border-radius: 12px;
+    max-width: 80%;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    position: relative;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.chat-bubble.user {
+    background: var(--olive);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+.chat-bubble.ai {
+    background: #f0f0f0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
 }
 
 /* Existing Thinking Dots Animation */
@@ -358,57 +441,6 @@ body {
     40% { transform: scale(0.8); opacity: 0.2; }
 }
 
-/* New Shape-Shifting Animation */
-.thinking-shapes {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 4vmin;
-    height: 10vmin;
-}
-
-.thinking-shapes::before {
-    content: '';
-    width: 8vmin;
-    height: 8vmin;
-    background-color: var(--olive);
-    opacity: 0.6;
-    animation:
-        shapeShift 6s infinite ease-in-out,
-        colorChange 6s infinite alternate;
-}
-
-@keyframes shapeShift {
-    0% {
-        border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-        transform: rotate(0deg) scale(1);
-    }
-    25% {
-        border-radius: 60% 40% 30% 70% / 60% 60% 40% 40%;
-        transform: rotate(90deg) scale(0.9);
-    }
-    50% {
-        border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
-        transform: rotate(180deg) scale(1.1);
-    }
-    75% {
-        border-radius: 30% 70% 60% 40% / 70% 30% 40% 60%;
-        transform: rotate(270deg) scale(0.9);
-    }
-    100% {
-        border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-@keyframes colorChange {
-    0% { background-color: #556B2F; }
-    25% { background-color: #728F5A; }
-    50% { background-color: #6c8b46; }
-    75% { background-color: #728F5A; }
-    100% { background-color: #556B2F; }
-}
-
 .ai-panel .cancel-btn {
     position: absolute;
     bottom: 4vmin;
@@ -425,6 +457,7 @@ body {
     transition: opacity 0.3s ease;
     opacity: 0;
     visibility: hidden;
+    z-index: 11;
 }
 
 .ai-panel.active .cancel-btn.show {
@@ -435,7 +468,7 @@ body {
 /* Info Popup Styles */
 .info-popup {
     position: fixed;
-    bottom: 12%; /* Adjusted to be above the nav */
+    bottom: 12%;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.75);
@@ -514,18 +547,27 @@ body {
         <button id="cameraBtn" class="camera-btn">
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0-5c-1.1 0-2 .9-2 2H8l-2 2H4c-1.1 0-2 .9-2 2v10a2 2 0 0 0 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-2l-2-2h-2c0-1.1-.9-2-2-2z"/></svg>
         </button>
-        <button class="nav-btn" id="marketBtn">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16v2H4zM4 10h16v2H4zM4 16h16v2H4z"/></svg>
-            <span>Market</span>
+        <button class="nav-btn" id="aiNavBtn">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M21 6.75V15h-4.5V6.75H21Zm-6-4.5V9h-4.5V2.25H15ZM9 9v6.75H2.25V9H9Zm0 6.75V21H2.25V15.75H9Zm6 0V21H9.75V15.75H15Zm6 0V21H15.75V15.75H21Zm-6-6V15h-4.5V9H15Zm0-6.75V9h-4.5V2.25H15Z"/>
+            </svg>
+            <span>AI</span>
         </button>
     </nav>
     <input type="file" id="fileInput" accept="image/*" style="display:none" />
     <section class="ai-panel" id="aiPanel">
-        <button class="close-btn" onclick="closeAI()">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12l-4.89 4.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/></svg>
-        </button>
-        <h3>AI Response</h3>
-        <div id="aiOutput">No response yet.</div>
+        <div class="ai-header">
+            <button id="newChatBtn" class="new-chat-btn">New Chat</button>
+            <h3>AI Assistant</h3>
+            <button id="closeBtn" class="close-btn" title="Close">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
+        <div id="aiOutput" class="ai-output-container">
+            <div class="chat-bubble ai">Hello! How can I assist you with your farming needs today?</div>
+        </div>
         <button id="cancelBtn" class="cancel-btn">Cancel</button>
     </section>
     <div id="infoPopup" class="info-popup"></div>
@@ -555,20 +597,27 @@ body {
     const weatherTempSpan = document.getElementById("weatherTemp");
     const weatherCitySpan = document.getElementById("weatherCity");
     const infoPopup = document.getElementById("infoPopup");
+    const aiNavBtn = document.getElementById("aiNavBtn");
+    const newChatBtn = document.getElementById("newChatBtn");
+    const closeBtn = document.getElementById("closeBtn");
 
     // --- State Variables ---
     let currentAbortController = null;
     let popupTimeout = null;
+    // Chat history array to store conversation context
+    let chatHistory = [{
+        role: "model",
+        parts: [{ text: "Hello! How can I assist you with your farming needs today?" }]
+    }];
+    let isFetching = false;
 
     // --- Panel Control Functions ---
     function openAI() {
         aiPanel.classList.add("active");
-        cancelBtn.classList.add('show');
     }
 
     function closeAI() {
         aiPanel.classList.remove("active");
-        cancelBtn.classList.remove('show');
         if (currentAbortController) {
             currentAbortController.abort();
             currentAbortController = null;
@@ -585,41 +634,76 @@ body {
         }, 3000); // Popup disappears after 3 seconds
     }
 
+    // --- Chat Rendering Functions ---
+    function renderChat() {
+        aiOutput.innerHTML = '';
+        chatHistory.forEach(message => {
+            const bubble = document.createElement('div');
+            bubble.classList.add('chat-bubble', message.role);
+            if (message.parts.some(p => p.inlineData)) {
+                 // Handle messages with images
+                 bubble.innerHTML = message.parts.map(p => {
+                    if (p.text) return `<p>${p.text}</p>`;
+                    if (p.inlineData) return `<img src="data:${p.inlineData.mimeType};base64,${p.inlineData.data}" style="max-width:100%; border-radius:12px;">`;
+                    return '';
+                 }).join('');
+            } else {
+                bubble.innerText = message.parts[0].text;
+            }
+            aiOutput.appendChild(bubble);
+        });
+        aiOutput.scrollTop = aiOutput.scrollHeight;
+    }
+
     // --- AI Integration Functions ---
     async function callAI(prompt, imageFile = null) {
-        // Show loading state and open the panel
-        aiOutput.innerHTML = `
-            <div class="thinking-dots">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <div class="thinking-shapes"></div>
-        `;
-        openAI();
+        if (isFetching) {
+            showInfoPopup("Please wait for the current response.");
+            return;
+        }
 
-        const payload = {
-            contents: [{
-                parts: [{ text: prompt }]
-            }]
+        isFetching = true;
+        cancelBtn.classList.add('show');
+
+        // Append user message to history and render
+        const userMessage = {
+            role: "user",
+            parts: [{ text: prompt }]
         };
 
         if (imageFile) {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                payload.contents[0].parts.push({
-                    inlineData: {
-                        mimeType: imageFile.type,
-                        data: e.target.result.split(',')[1]
-                    }
-                });
-                await sendRequest(payload);
-            };
-            reader.readAsDataURL(imageFile);
-        } else {
-            await sendRequest(payload);
+            userMessage.parts.push({
+                inlineData: {
+                    mimeType: imageFile.type,
+                    data: await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                        reader.readAsDataURL(imageFile);
+                    })
+                }
+            });
         }
-    }
+        chatHistory.push(userMessage);
+        renderChat();
+        searchInput.value = "";
+        openAI();
 
-    async function sendRequest(payload) {
+        // Add thinking animation
+        const thinkingBubble = document.createElement('div');
+        thinkingBubble.classList.add('chat-bubble', 'ai');
+        thinkingBubble.innerHTML = `
+            <div class="thinking-dots">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+        `;
+        aiOutput.appendChild(thinkingBubble);
+        aiOutput.scrollTop = aiOutput.scrollHeight;
+
+        const payload = {
+            contents: chatHistory,
+            // You can add more generationConfig options here
+        };
+
         currentAbortController = new AbortController();
         const { signal } = currentAbortController;
 
@@ -638,19 +722,30 @@ body {
 
             const data = await response.json();
             const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received. Please try again.";
-            aiOutput.innerText = responseText;
+            
+            // Remove thinking bubble and add AI response
+            aiOutput.removeChild(thinkingBubble);
+            const aiMessage = {
+                role: "model",
+                parts: [{ text: responseText }]
+            };
+            chatHistory.push(aiMessage);
+            renderChat();
         } catch (err) {
             if (err.name === 'AbortError') {
                 showInfoPopup("Request canceled.");
             } else {
                 console.error("AI API Error:", err);
                 showInfoPopup("Oops, something went wrong. Please try again.");
-                // Reset the AI output to avoid showing a blank screen
-                aiOutput.innerText = "No response yet.";
+            }
+            // Remove thinking bubble on error
+            if (aiOutput.contains(thinkingBubble)) {
+                aiOutput.removeChild(thinkingBubble);
             }
         } finally {
             cancelBtn.classList.remove('show');
             currentAbortController = null;
+            isFetching = false;
         }
     }
 
@@ -700,13 +795,13 @@ body {
         updateLocationAndWeather();
         createDots();
         scrollToIndex(0);
+        renderChat();
     });
 
     sendBtn.addEventListener("click", () => {
         const value = searchInput.value.trim();
         if (value) {
             callAI(value);
-            searchInput.value = "";
         }
     });
 
@@ -734,15 +829,18 @@ body {
             const recognition = new SpeechRecognition();
             recognition.lang = "en-US";
             recognition.interimResults = false;
+            showInfoPopup("Listening...");
             recognition.onresult = (e) => {
                 const transcript = e.results[0][0].transcript;
-                searchInput.value = transcript;
                 callAI(transcript);
             };
             recognition.onerror = (e) => {
                 console.error("Speech Recognition Error:", e.error);
                 showInfoPopup("Voice input failed.");
             };
+            recognition.onend = () => {
+                 showInfoPopup("Listening stopped.");
+            }
             recognition.start();
         } else {
             showInfoPopup("Speech recognition is not supported by this browser.");
@@ -770,6 +868,17 @@ body {
     });
 
     locationBtn.addEventListener("click", updateLocationAndWeather);
+    aiNavBtn.addEventListener("click", openAI);
+    closeBtn.addEventListener("click", closeAI);
+    newChatBtn.addEventListener("click", () => {
+        chatHistory = [{
+            role: "model",
+            parts: [{ text: "Hello! How can I assist you with your farming needs today?" }]
+        }];
+        renderChat();
+        showInfoPopup("New chat started.");
+    });
+
 
     // --- Carousel Logic ---
     const carousel = document.getElementById("carousel");
@@ -825,33 +934,6 @@ body {
             index = bestIndex;
             updateDots();
         }, 80);
-    });
-
-    // --- Touch Scroll & Swipe Gestures ---
-    let startX = 0;
-    let scrollLeft = 0;
-    carousel.addEventListener("touchstart", (e) => {
-        startX = e.touches[0].pageX;
-        scrollLeft = carousel.scrollLeft;
-    });
-    carousel.addEventListener("touchmove", (e) => {
-        const x = e.touches[0].pageX;
-        carousel.scrollLeft = scrollLeft + (startX - x);
-    });
-
-    let swipeStartX = 0;
-    phoneFrame.addEventListener('touchstart', (e) => {
-        swipeStartX = e.touches[0].clientX;
-    });
-    phoneFrame.addEventListener('touchend', (e) => {
-        const swipeEndX = e.changedTouches[0].clientX;
-        const swipeDistance = swipeEndX - swipeStartX;
-        const swipeThreshold = 50;
-        
-        // Swipe left to right to open AI panel
-        if (swipeDistance > swipeThreshold && !aiPanel.classList.contains('active')) {
-            openAI();
-        }
     });
 
 </script>
